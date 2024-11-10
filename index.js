@@ -69,8 +69,32 @@ async function getSheetData(auth) {
     if (rows.length) {
       console.log('Data retrieved successfully.');
 
-      // Создаем новый рабочий лист, используя только данные с A до N столбца
-      const ws = XLSX.utils.aoa_to_sheet(rows);
+      // Заголовки — они должны быть первыми строками данных
+      const headers = rows[0]; // Первая строка - это заголовки
+
+      // Преобразуем данные:
+      const transformedRows = rows.slice(1).map(row => {
+        // Преобразуем столбец I (Бюджет) в число, если это возможно
+        if (row[8]) { // Столбец I - индекс 8 (нумерация с нуля)
+          let budgetValue = row[8];
+          // Если значение - строка, пытаемся извлечь число
+          if (typeof budgetValue === 'string') {
+            // Убираем все ненужные символы (например, "грн")
+            budgetValue = parseFloat(budgetValue.replace(/[^\d.-]/g, ''));
+          }
+          // Если это число, заменяем в массиве
+          row[8] = isNaN(budgetValue) ? 0 : budgetValue;
+        }
+        
+        // Преобразуем все остальные ячейки в строки (кроме столбца I)
+        return row.map((cell, index) => (index !== 8 ? String(cell) : cell)); // Индекс 8 - это столбец Бюджет
+      });
+
+      // Добавляем заголовки в начало массива
+      transformedRows.unshift(headers);
+
+      // Создаем новый рабочий лист, используя преобразованные данные
+      const ws = XLSX.utils.aoa_to_sheet(transformedRows);
 
       // Создаем книгу Excel и добавляем рабочий лист
       const wb = XLSX.utils.book_new();

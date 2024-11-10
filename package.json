@@ -1,10 +1,9 @@
 {
-  "type": "module",
   "name": "olx",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon sql_application.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +16,7 @@
     "google-auth-library": "^9.14.2",
     "googleapis": "^144.0.0",
     "json2csv": "^6.0.0-alpha.2",
+    "msnodesqlv8": "^4.2.1",
     "mssql": "^11.0.1",
     "nodemon": "^3.1.7",
     "open": "^10.1.0",
